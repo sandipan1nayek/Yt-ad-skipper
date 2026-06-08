@@ -14,8 +14,8 @@
     }
     h3 { 
       margin-top: 0; 
-      font-size: 16px;
-      margin-bottom: 15px;
+      font-size: 15px;
+      margin-bottom: 12px;
     }
     select { 
       padding: 8px; 
@@ -31,21 +31,21 @@
     select:hover {
       border-color: #888;
     }
-    .footer {
+    .status-text {
       font-size: 11px;
       color: #aaaaaa;
-      margin-top: 15px;
+      margin-top: 12px;
     }
   </style>
 </head>
 <body>
-  <h3>Ad Speed Controller</h3>
+  <h3>YouTube Ad Speed</h3>
   <select id="speedSelect">
     <option value="5">5x Speed</option>
     <option value="10">10x Speed</option>
-    <option value="16">16x Speed (Max)</option>
+    <option value="16" selected>16x Speed (Max)</option>
   </select>
-  <div class="footer">Auto-skips when ready</div>
+  <div class="status-text">Teleporting active</div>
   
   <script src="popup.js"></script> 
 </body>

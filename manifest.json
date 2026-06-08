@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "YT Ad Speeder",
-  "version": "1.0",
-  "description": "Silently speeds up YouTube ads and auto-clicks the skip button.",
+  "name": "YouTube Ad Teleporter",
+  "version": "2.0",
+  "description": "Mutes YouTube ads and instantly teleports to the end of their timelines.",
   "permissions": [
     "storage"
   ],

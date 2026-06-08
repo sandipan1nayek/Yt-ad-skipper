@@ -1,50 +1,48 @@
-let isAdSpeedUpActive = false;
-let currentAdSpeed = 16; // Default to absolute maximum speed
+let isAdActive = false;
+let backupSpeed = 16; 
 
-// 1. Fetch your saved speed from memory when YouTube loads
+// Initial read from memory
 chrome.storage.local.get(['adSpeed'], function(result) {
     if (result.adSpeed) {
-        currentAdSpeed = result.adSpeed;
+        backupSpeed = result.adSpeed;
     }
 });
 
-// 2. Listen in case you change the speed from the popup while watching a video
+// Update speed config if changed in the popup menu on the fly
 chrome.storage.onChanged.addListener(function(changes, namespace) {
     if (changes.adSpeed) {
-        currentAdSpeed = changes.adSpeed.newValue;
+        backupSpeed = changes.adSpeed.newValue;
     }
 });
 
-// 3. The main ghost loop that runs twice a second
+// Run loop every 250ms for lightning fast reaction times
 setInterval(() => {
-    // Find the actual video player
     const video = document.querySelector('video.html5-main-video');
     if (!video) return;
 
-    // Check if YouTube's wrapper has the "ad-showing" class
+    // Check if YouTube has applied the ad flag to the player canvas wrapper
     const isAdShowing = document.querySelector('.ad-showing') !== null;
-    
-    // Look for all known variations of the YouTube skip button class
-    const skipButton = document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button, .ytp-ad-skip-button-container');
 
     if (isAdShowing) {
-        // We are inside an ad! Crank the speed and mute it so you don't hear chipmunk audio.
-        if (video.playbackRate < currentAdSpeed) {
-            video.playbackRate = currentAdSpeed;
-            video.muted = true; 
-            isAdSpeedUpActive = true;
-        }
+        // 1. Mute audio instantly to protect the vibe
+        video.muted = true;
+        isAdActive = true;
 
-        // The exact millisecond the skip button physically renders on screen, click it
-        if (skipButton) {
-            skipButton.click();
+        // 2. Teleport playhead straight to the final millisecond of the ad file
+        if (video.duration && video.currentTime < video.duration - 0.2) {
+            video.currentTime = video.duration - 0.1;
+        }
+        
+        // 3. Apply the speed controller as a secondary acceleration layer
+        if (video.playbackRate < backupSpeed) {
+            video.playbackRate = backupSpeed;
         }
     } else {
-        // No ad is playing. If we just finished speeding one up, reset the video to normal.
-        if (isAdSpeedUpActive) {
-            video.playbackRate = 1; // Return to standard 1x speed
-            video.muted = false;    // Give audio back
-            isAdSpeedUpActive = false;
+        // Clear modifiers once normal main content video resumes
+        if (isAdActive) {
+            video.playbackRate = 1; 
+            video.muted = false;    
+            isAdActive = false;
         }
     }
-}, 500);
+}, 250);
