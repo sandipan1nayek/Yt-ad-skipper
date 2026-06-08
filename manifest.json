@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "YT Ad Speeder",
+  "version": "1.0",
+  "description": "Silently speeds up YouTube ads and auto-clicks the skip button.",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
